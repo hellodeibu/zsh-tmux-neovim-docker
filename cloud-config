@@ -1,0 +1,65 @@
+// Additional run commands:
+  - [ sh, -c, "sudo curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` | sudo tee /usr/local/bin/docker-compose > /dev/null"]
+  - [ sh, -c, "sudo chmod +x /usr/local/bin/docker-compose"]
+  - [ sh, -c, "docker run hellodeibu/shell" ]
+
+
+#cloud-config
+apt:
+  sources:
+    mosh:
+      source: "ppa:keithw/mosh"
+    neovim:
+      source: "ppa:neovim-ppa/stable"
+ssh_pwauth: no
+users:
+  - name: davejansen
+    plain_text_passwd: 'banana'
+    groups: sudo
+    shell: /bin/bash
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    ssh-authorized-keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDOVRFlUw8nINgsDrzA2MRcFTFdpWdoHmZ8H0Iu4W7Oz1tV4FawLZSMYTWI4MPDSFEkGwdKAKySR11Kb0UjyepROSMiH1AgoDjLrra8sEh+T76jgNuENig9dTEJcsq1RTU7DrbsJVR16TrU6OShRHendoesiM9Cyh5MmKM38ywj+ph9tWZmEIZ58aNXpGBdedSXgtwyoiQ8MokmbtvPVpGKCUBe57u2lVZkaXv9A53r5mgtXgDQIxnrD6iUFzq0Vsn+Kk8OTJewyHNotlg7Fc7GWIy87Wxqk/SammkQsnnwPIu0FK1fMDtazE89RD2CoiR/QxK25m/XfbL0J3BfSOYD92Hb1x7LJV0rQd0PiCSV3I987dswDpk7RsvimhNvNG5VtI6FjkLyDaKhVzRbFOOROaqD7fuLTwSxKaFrf1lGWW/HSq9F4/ReoXBBb0GQAsbB3A00fzXer/2WaA6l5TjXPnvQFXx2+2Y+FnalH3lxgcjneqwK1y2iCSTkjwA1MFAxaMQizJiuLD7SOjD3ZCujpOPxnvhfk5DwNvxat7W+Iu5TZV2lLF2GAiLPPxaxaDw12HxAWnDlT5RLq9wYb7cNjTfxHPYRnidGCwkPodNN8KGO7XeaBPmJ51jaTlU3XauYDdIdNMok1tZcPezrDQOGb1LkcT98fKGAL4BWenHSjQ==
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDP/IDQ/JtOhLo7QRrz5DWZKw+ehH/8RURfEbpLtEX9TfDE4czWt1E4DuaqG4kBoAL6Y1Yj7m8y2W2PSCxg8d/e1oZ4Ra519MGwz2FSYLut5vJV9N3kuTaubnr6BVRrpIfoszNIYo5BK7ZaFmVauc6C7+RSkPcPAs5q6QQGuotkt7FmPycxRbG6ilr/o8Hk0dcqQFshK5AplBziLf5yQTybvNvzBld+A+YywQU99cpfDn5P8s8+P9/EtEjVbW8nAfJoCik4gBHSY1Z56wZQbriD60dv0xKpqxEfG3Nfmd8L0TErM91/BNuFvpOR8D7IegztF2ToS1EXY6oQdgRJxY0B davej@sha.kr
+package_upgrade: true
+packages:
+  - locales
+  - mosh
+  - silversearcher-ag
+  - tmux
+  - wget
+  - zsh
+  - automake
+  - build-essential
+  - pkg-config
+  - libevent-dev
+  - libncurses5-dev
+  - software-properties-common
+  - python-dev 
+  - python-pip 
+  - python3-dev 
+  - python3-pip
+  - neovim
+runcmd:
+  - [ sh, -c, "sudo locale-gen en_US.UTF-8" ]
+  - [ sh, -c, 'echo "LC_ALL=\"en_US.UTF-8\"" | sudo tee -a /etc/environment' ]
+  - [ sh, -c, "chsh -s /usr/bin/zsh" ]
+  - [ sh, -c, "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - && \
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list && \
+  sudo apt-get update && sudo apt-get install yarn" ]
+  - [ sh, -c, 'curl -fsSL get.docker.com | sudo sh' ]
+  - [ sh, -c, "curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim" ]
+  - [ sh, -c, "pip3 install neovim" ]
+  - [ sh, -c, "mkdir -p ~/.local/share/nvim/site/pack/git-plugins/start \
+  git clone https://github.com/w0rp/ale.git ~/.local/share/nvim/site/pack/git-plugins/start/ale" ]
+  - [ sh, -c, "git clone https://github.com/tmux/tmux.git /tmp/tmux && cd /tmp/tmux" ]
+  - [ sh, -c, "sh autogen.sh && ./configure && make && sudo make install" ]
+  - [ sh, -c, "git clone --depth 1 https://github.com/junegunn/fzf.git /tmp/fzf && /tmp/fzf/install" ]
+  - [ sh, -c, "rm -rf /tmp/tmux /tmp/fzf" ]
+  - [ sh, -c, "yarn global add typescript eslint" ]
+  - [ sh, -c, "nvim +PluginInstall" ]
+power_state:
+  timeout: 120
+  message: Rebooting to apply all changes.
+  mode: reboot

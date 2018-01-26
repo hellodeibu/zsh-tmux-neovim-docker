@@ -19,38 +19,31 @@ RUN apt-get update && apt-get install -y \
       jq \
       libncurses5-dev \
       libevent-dev \
-      net-tools \
-      netcat-openbsd \
-      rubygems \
-      ruby-dev \
+      #net-tools \
+      #netcat-openbsd \
       silversearcher-ag \
       socat \
       software-properties-common \
       tmux \
       tzdata \
       wget \
-      zsh 
+      zsh
 RUN chsh -s /usr/bin/zsh
 
 # Install docker
-RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D &&\
-      echo "deb https://apt.dockerproject.org/repo ubuntu-xenial main" > /etc/apt/sources.list.d/docker.list &&\
-      apt-get install -y apt-transport-https &&\
-      apt-get update &&\
-      apt-get install -y docker-engine
-RUN  curl -o /usr/local/bin/docker-compose -L "https://github.com/docker/compose/releases/download/1.13.0/docker-compose-$(uname -s)-$(uname -m)" &&\
-     chmod +x /usr/local/bin/docker-compose
-
-# Install go
-RUN add-apt-repository ppa:longsleep/golang-backports
-RUN apt-get update
-RUN apt-get install -y golang-1.8-go
+# RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D &&\
+#       echo "deb https://apt.dockerproject.org/repo ubuntu-xenial main" > /etc/apt/sources.list.d/docker.list &&\
+#       apt-get install -y apt-transport-https &&\
+#       apt-get update &&\
+#       apt-get install -y docker-engine
+# RUN  curl -o /usr/local/bin/docker-compose -L "https://github.com/docker/compose/releases/download/1.13.0/docker-compose-$(uname -s)-$(uname -m)" &&\
+#      chmod +x /usr/local/bin/docker-compose
 
 # Install tmux
 WORKDIR /usr/local/src
-RUN wget https://github.com/tmux/tmux/releases/download/2.5/tmux-2.5.tar.gz
-RUN tar xzvf tmux-2.5.tar.gz
-WORKDIR /usr/local/src/tmux-2.5
+RUN wget https://github.com/tmux/tmux/releases/download/2.6/tmux-2.6.tar.gz
+RUN tar xzvf tmux-2.6.tar.gz
+WORKDIR /usr/local/src/tmux-2.6
 RUN ./configure
 RUN make 
 RUN make install
